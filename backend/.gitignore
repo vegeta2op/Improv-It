@@ -1,0 +1,64 @@
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+wheels/
+
+# ── Virtual environments ──────────────────────────────────────
+venv/
+env/
+ENV/
+.venv/
+evn/
+
+# ── Environment & Secrets ─────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Database ──────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Alembic ───────────────────────────────────────────────────
+# Keep migrations tracked, ignore only generated cache
+alembic/__pycache__/
+
+# ── Testing & Coverage ────────────────────────────────────────
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+
+# ── ML Artifacts ──────────────────────────────────────────────
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.hdf5
+*.model
+*.pt
+*.pth
+*.onnx
+*.npy
+*.npz
+mlruns/
+.bentoml/
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Misc ──────────────────────────────────────────────────────
+*.bak
+*.tmp
+.cache/

@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: improvit-db
+    environment:
+      POSTGRES_USER: improvit
+      POSTGRES_PASSWORD: improvit_secure_password
+      POSTGRES_DB: improvit
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U improvit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: improvit-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Backend API (FastAPI)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: improvit-api
+    ports:
+      - "8081:8081"
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=improvit
+      - POSTGRES_PASSWORD=improvit_secure_password
+      - POSTGRES_DB=improvit
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ML_SERVICE_URL=http://ml-service:3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8081 --reload
+
+  # ML Prediction Service (BentoML)
+  ml-service:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    container_name: improvit-ml
+    ports:
+      - "3001:3001"
+    environment:
+      - MODEL_DIR=/app/models
+    volumes:
+      - ./ml:/app
+      - ./models:/app/models
+    command: bentoml serve bento_service:app --host 0.0.0.0 --port 3001
+
+  # Frontend (Vite + React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: improvit-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8081/api/v1
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
