@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.APP_NAME,
     description="Student Performance Prediction System API",
-    version="0.0.1",
+    version="0.0.2",
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
@@ -76,7 +76,7 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
-        "version": "0.0.1",
+        "version": "0.0.2",
     }
 
 
@@ -104,7 +104,7 @@ app.include_router(
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Improv-It API", "docs": "/docs", "version": "0.0.1"}
+    return {"message": "Welcome to Improv-It API", "docs": "/docs", "version": "0.0.2"}
 
 
 if __name__ == "__main__":
