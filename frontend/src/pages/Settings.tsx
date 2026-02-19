@@ -178,7 +178,7 @@ export default function SettingsPage() {
           </Card>
 
           <div className="text-center text-xs text-muted-foreground pt-8 pb-4">
-            <p>Improv-It v0.0.2 • Build {new Date().getFullYear()}.{new Date().getMonth() + 1}.{new Date().getDate()}</p>
+            <p>Improv-It v0.0.1 • Build {new Date().getFullYear()}.{new Date().getMonth() + 1}.{new Date().getDate()}</p>
           </div>
         </div>
       </div>
